@@ -19,18 +19,6 @@ const routes = [
 		path: "/auth",
 		name: "Auth",
 		component: () => import("../views/Auth/Index"),
-		children: [
-			{
-				path: "login",
-				name: "Login",
-				component: () => import('../views/Auth/Login.vue')
-			},
-			{
-				path: "register",
-				name: "Register",
-				component: () => import('../views/Auth/Register.vue')
-			},
-		]
 	}
 ]
 
