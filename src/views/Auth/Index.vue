@@ -107,7 +107,7 @@
 													></v-text-field>
 													<v-text-field
 														name="username"
-														label="username"
+														label="Username"
 														prepend-icon="mdi-account"
 														color="grey accent-3"
 														type="text"
