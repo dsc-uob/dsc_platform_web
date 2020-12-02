@@ -1,10 +1,10 @@
 <template>
 	<v-app>
 		<v-content>
-			<v-container class="fill-height" fluid>
+			<v-container class="fill-height bg" fluid>
 				<v-row align="center" justify="center">
 					<v-col cols="12" sm="8" md="8">
-						<v-card elevation="3" height="493">
+						<v-card elevation="3" :height="step == 1 ? 598 : null">
 							<v-window v-model="step">
 								<v-window-item :value="1">
 									<v-row>
@@ -15,7 +15,14 @@
 												>
 													Sign in to DSC UOB
 												</h1>
-												<div class="text-center mt-4"></div>
+												<div class="text-center mt-4">
+													<v-img
+														class="center"
+														src="/logo.jpg"
+														width="100"
+														height="100"
+													/>
+												</div>
 												<!-- logo -->
 												<v-form>
 													<v-text-field
@@ -83,19 +90,24 @@
 													Create an account
 												</h1>
 												<div class="text-center mt-4">
-													<!-- logo -->
+													<v-img
+														class="center"
+														src="/logo.jpg"
+														width="100"
+														height="100"
+													/>
 												</div>
 												<v-form>
 													<v-text-field
-														name="firstName"
-														label="First name"
+														name="name"
+														label="Name"
 														prepend-icon="mdi-account"
 														color="grey accent-3"
 														type="text"
 													></v-text-field>
 													<v-text-field
-														name="lastName"
-														label="Last name"
+														name="username"
+														label="username"
 														prepend-icon="mdi-account"
 														color="grey accent-3"
 														type="text"
@@ -143,6 +155,16 @@ export default {
 </script>
 <style scoped>
 .col {
-	height: 493px;
+	height: 598px;
+}
+.bg {
+	/* background: url("/bg-wave.svg") no-repeat center center; */
+	background-size: cover;
+}
+.center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
 }
 </style>
