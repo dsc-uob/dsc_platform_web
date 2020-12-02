@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-		<v-content>
+		<v-main>
 			<v-container class="fill-height bg" fluid>
 				<v-row align="center" justify="center">
 					<v-col cols="12" sm="8" md="8">
@@ -30,13 +30,28 @@
 														prepend-icon="mdi-email"
 														type="email"
 														color="grey accent-3"
+														:rules="loginForm.email.rules"
+														v-model="loginForm.email.value"
 													/>
 													<v-text-field
 														label="Password"
 														prepend-icon="mdi-lock"
-														type="password"
+														:type="
+															loginForm.password.show ? 'text' : 'password'
+														"
 														color="grey accent-3"
-														append-icon="mdi-eye-off"
+														:rules="loginForm.password.rules"
+														v-model="loginForm.password.value"
+														:append-icon="
+															loginForm.password.show
+																? 'mdi-eye'
+																: 'mdi-eye-off'
+														"
+														@click:append="
+															() =>
+																(loginForm.password.show = !loginForm.password
+																	.show)
+														"
 													/>
 												</v-form>
 												<h3 class="text-center mt-3">Forgot your password?</h3>
@@ -104,6 +119,8 @@
 														prepend-icon="mdi-account"
 														color="grey accent-3"
 														type="text"
+														:rules="registerForm.name.rules"
+														v-model="registerForm.name.value"
 													></v-text-field>
 													<v-text-field
 														name="username"
@@ -111,6 +128,8 @@
 														prepend-icon="mdi-account"
 														color="grey accent-3"
 														type="text"
+														:rules="registerForm.username.rules"
+														v-model="registerForm.username.value"
 													></v-text-field>
 													<v-text-field
 														name="email"
@@ -118,14 +137,29 @@
 														prepend-icon="mdi-email"
 														color="grey accent-3"
 														type="email"
+														:rules="registerForm.email.rules"
+														v-model="registerForm.email.value"
 													></v-text-field>
 													<v-text-field
 														name="password"
 														label="Password"
 														prepend-icon="mdi-lock"
 														color="grey accent-3"
-														type="password"
-														append-icon="mdi-eye-off"
+														:type="
+															registerForm.password.show ? 'text' : 'password'
+														"
+														:rules="registerForm.password.rules"
+														v-model="registerForm.password.value"
+														:append-icon="
+															registerForm.password.show
+																? 'mdi-eye'
+																: 'mdi-eye-off'
+														"
+														@click:append="
+															() =>
+																(registerForm.password.show = !registerForm
+																	.password.show)
+														"
 													></v-text-field>
 												</v-form>
 												<div class="text-center mt-3">
@@ -142,14 +176,73 @@
 					</v-col>
 				</v-row>
 			</v-container>
-		</v-content>
+		</v-main>
 	</v-app>
 </template>
 <script>
+//eslint-disable-next-line
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+
 export default {
 	name: "AuthLayout",
 	data: () => ({
 		step: 1,
+		loginForm: {
+			email: {
+				rules: [
+					(v) => !!v || "E-mail is required",
+					(v) =>
+						/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+						"E-mail must be valid",
+				],
+				value: "",
+			},
+			password: {
+				rules: [
+					(value) =>
+						passwordRegex.test(value) ||
+						"Min. 8 characters with at least one capital letter, a number and a special character.",
+				],
+				value: "",
+				show: false,
+			},
+		},
+		registerForm: {
+			name: {
+				rules: [
+					(v) => v.length > 3 || "Min. 3 characters.",
+					(v) => !!v || "Name is required",
+					(v) => /^[a-zA-zء-ي ]*$/.test(v) || "Username must be valid",
+				],
+				value: "",
+			},
+			username: {
+				rules: [
+					(v) => v.length > 3 || "Min. 3 characters.",
+					(v) => !!v || "Username is required",
+					(v) => /^[a-zA-Z0-9]+$/.test(v) || "Username must be valid",
+				],
+				value: "",
+			},
+			email: {
+				rules: [
+					(v) => !!v || "E-mail is required",
+					(v) =>
+						/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+						"E-mail must be valid",
+				],
+				value: "",
+			},
+			password: {
+				rules: [
+					(value) =>
+						passwordRegex.test(value) ||
+						"Min. 8 characters with at least one capital letter, a number and a special character.",
+				],
+				value: "",
+				show: false,
+			},
+		},
 	}),
 };
 </script>
