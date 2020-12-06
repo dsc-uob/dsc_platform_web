@@ -19,6 +19,18 @@ const routes = [
 		path: "/auth",
 		name: "Auth",
 		component: () => import("../views/Auth/Index"),
+	},
+	{
+		path: "/dashboard",
+		name: "Dashboard",
+		component: () => import("../views/Dashboard/Index"),
+		children: [
+			{
+				path: 'files',
+				name: 'DashboardFiles',
+				component: () => import('../views/Dashboard/Files')
+			}
+		]
 	}
 ]
 
