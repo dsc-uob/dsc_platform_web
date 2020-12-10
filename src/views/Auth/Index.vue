@@ -24,14 +24,14 @@
 													/>
 												</div>
 												<!-- logo -->
-												<v-form>
+												<v-form @submit.prevent="login" ref="loginForm">
 													<v-text-field
-														label="Email"
+														label="Login"
 														prepend-icon="mdi-email"
-														type="email"
+														type="text"
 														color="grey accent-3"
-														:rules="loginForm.email.rules"
-														v-model="loginForm.email.value"
+														:rules="loginForm.login.rules"
+														v-model="loginForm.login.value"
 													/>
 													<v-text-field
 														label="Password"
@@ -56,7 +56,12 @@
 												</v-form>
 												<h3 class="text-center mt-3">Forgot your password?</h3>
 												<div class="text-center mt-3">
-													<v-btn rounded color="grey accent-3" dark
+													<v-btn
+														:loading="loading"
+														@click="login"
+														rounded
+														color="grey accent-3"
+														dark
 														>SIGN IN</v-btn
 													>
 												</div>
@@ -75,7 +80,12 @@
 												<h5 class="text-center">Don't have an account yet?</h5>
 											</v-card-text>
 											<div class="text-center">
-												<v-btn rounded outlined dark @click="step++"
+												<v-btn
+													rounded
+													outlined
+													dark
+													@click="step++"
+													:disabled="loading"
 													>Register</v-btn
 												>
 											</div>
@@ -92,7 +102,12 @@
 												<h5 class="text-center">Already a user?</h5>
 											</v-card-text>
 											<div class="text-center">
-												<v-btn rounded outlined dark @click="step--"
+												<v-btn
+													rounded
+													outlined
+													dark
+													@click="step--"
+													:disabled="loading"
 													>Login</v-btn
 												>
 											</div>
@@ -112,7 +127,7 @@
 														height="100"
 													/>
 												</div>
-												<v-form>
+												<v-form ref="registerForm" @submit.prevent="register">
 													<v-text-field
 														name="name"
 														label="Name"
@@ -121,6 +136,8 @@
 														type="text"
 														:rules="registerForm.name.rules"
 														v-model="registerForm.name.value"
+														:error-messages="registerForm.name.errors"
+														@change="registerForm.name.errors = []"
 													></v-text-field>
 													<v-text-field
 														name="username"
@@ -130,6 +147,8 @@
 														type="text"
 														:rules="registerForm.username.rules"
 														v-model="registerForm.username.value"
+														:error-messages="registerForm.username.errors"
+														@change="registerForm.username.errors = []"
 													></v-text-field>
 													<v-text-field
 														name="email"
@@ -139,6 +158,8 @@
 														type="email"
 														:rules="registerForm.email.rules"
 														v-model="registerForm.email.value"
+														:error-messages="registerForm.email.errors"
+														@change="registerForm.email.errors = []"
 													></v-text-field>
 													<v-text-field
 														name="password"
@@ -160,13 +181,35 @@
 																(registerForm.password.show = !registerForm
 																	.password.show)
 														"
+														:error-messages="registerForm.password.errors"
+														@change="registerForm.password.errors = []"
 													></v-text-field>
 												</v-form>
 												<div class="text-center mt-3">
-													<v-btn rounded color="grey accent-3" dark
+													<v-btn
+														:loading="loading"
+														@click="register"
+														rounded
+														color="grey accent-3"
+														dark
 														>Register</v-btn
 													>
 												</div>
+											</v-card-text>
+										</v-col>
+									</v-row>
+								</v-window-item>
+								<v-window-item :value="3">
+									<v-row>
+										<v-col cols="12" md="12" class="grey accent-3">
+											<v-card-text class="white--text mt-12">
+												<h1 class="text-center display-1">
+													Welcome back {{ user.first_name }}
+												</h1>
+												<h5 class="text-center">
+													You will be redirected to your dashboard. have a nice
+													day :)
+												</h5>
 											</v-card-text>
 										</v-col>
 									</v-row>
@@ -176,6 +219,18 @@
 					</v-col>
 				</v-row>
 			</v-container>
+			<v-snackbar v-model="snackbar.show">
+				{{ snackbar.text }}
+				<template v-slot:action="{ attrs }">
+					<v-btn
+						text
+						:color="snackbar.color"
+						v-bind="attrs"
+						@click.native="snackbar.show = false"
+						>Close</v-btn
+					>
+				</template>
+			</v-snackbar>
 		</v-main>
 	</v-app>
 </template>
@@ -188,12 +243,13 @@ export default {
 	data: () => ({
 		step: 1,
 		loginForm: {
-			email: {
+			login: {
 				rules: [
 					(v) => !!v || "E-mail is required",
 					(v) =>
 						/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-						"E-mail must be valid",
+						/^[a-zA-Z0-9]+$/.test(v) ||
+						"Login must be a valid email or username",
 				],
 				value: "",
 			},
@@ -215,6 +271,7 @@ export default {
 					(v) => /^[a-zA-zء-ي ]*$/.test(v) || "Username must be valid",
 				],
 				value: "",
+				errors: [],
 			},
 			username: {
 				rules: [
@@ -223,6 +280,7 @@ export default {
 					(v) => /^[a-zA-Z0-9]+$/.test(v) || "Username must be valid",
 				],
 				value: "",
+				errors: [],
 			},
 			email: {
 				rules: [
@@ -232,6 +290,7 @@ export default {
 						"E-mail must be valid",
 				],
 				value: "",
+				errors: [],
 			},
 			password: {
 				rules: [
@@ -240,10 +299,96 @@ export default {
 						"Min. 8 characters with at least one capital letter, a number and a special character.",
 				],
 				value: "",
+				errors: [],
 				show: false,
 			},
 		},
+		loading: false,
+		snackbar: {
+			show: false,
+			text: "",
+			color: "success",
+		},
+		user: {},
 	}),
+	methods: {
+		capitalizeFirstLetter(string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		},
+		async login() {
+			if (this.$refs.loginForm.validate()) {
+				let { login, password } = this.loginForm;
+
+				try {
+					this.loading = true;
+
+					let res = await this.$http.post("user/login/", {
+						username: login.value,
+						password: password.value,
+					});
+
+					this.user = res.data;
+					this.step = 3;
+
+					this.$store.dispatch("setToken", res.data.token);
+
+					setTimeout(() => this.$router.push("/"), 1500);
+				} catch (err) {
+					this.snackbar = {
+						show: true,
+						text: err.response.data.non_field_errors[0],
+						color: "error",
+					};
+				}
+				this.loading = false;
+			}
+		},
+		async register() {
+			if (this.$refs.registerForm.validate()) {
+				let { email, password, name, username } = this.registerForm;
+
+				try {
+					this.loading = true;
+					await this.$http.post("user/create/", {
+						username: username.value,
+						password: password.value,
+						first_name: name.value,
+						email: email.value,
+					});
+
+					this.snackbar = {
+						show: true,
+						text: "Your account was created successfully, please login.",
+						color: "success",
+					};
+
+					email.value = "";
+					password.value = "";
+					name.value = "";
+					username.value = "";
+
+					this.step = 1;
+				} catch (err) {
+					this.registerForm.email.errors =
+						err.response.data?.email?.map(this.capitalizeFirstLetter) ?? [];
+					this.registerForm.username.errors =
+						err.response.data?.username?.map(this.capitalizeFirstLetter) ?? [];
+					this.registerForm.name.errors =
+						err.response.data?.name?.map(this.capitalizeFirstLetter) ?? [];
+					this.registerForm.password.errors =
+						err.response.data?.password?.map(this.capitalizeFirstLetter) ?? [];
+
+					this.snackbar = {
+						show: true,
+						text: "Something went wrong :(",
+						color: "error",
+					};
+				}
+
+				this.loading = false;
+			}
+		},
+	},
 };
 </script>
 <style scoped>
