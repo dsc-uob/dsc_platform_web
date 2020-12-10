@@ -236,7 +236,7 @@
 </template>
 <script>
 //eslint-disable-next-line
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+const passwordRegex = /^(?=.*?[A-Za-z-!@#\$&*~])(?=.*?[0-9]).{6,}$/;
 
 export default {
 	name: "AuthLayout",
@@ -245,6 +245,7 @@ export default {
 		loginForm: {
 			login: {
 				rules: [
+					(v) => v.length > 5 || "Min. 6 characters.",
 					(v) => !!v || "E-mail is required",
 					(v) =>
 						/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
@@ -257,7 +258,7 @@ export default {
 				rules: [
 					(value) =>
 						passwordRegex.test(value) ||
-						"Min. 8 characters with at least one capital letter, a number and a special character.",
+						"Min. 6 characters with at least one  number.",
 				],
 				value: "",
 				show: false,
@@ -275,7 +276,7 @@ export default {
 			},
 			username: {
 				rules: [
-					(v) => v.length > 3 || "Min. 3 characters.",
+					(v) => v.length > 5 || "Min. 6 characters.",
 					(v) => !!v || "Username is required",
 					(v) => /^[a-zA-Z0-9]+$/.test(v) || "Username must be valid",
 				],
@@ -296,7 +297,7 @@ export default {
 				rules: [
 					(value) =>
 						passwordRegex.test(value) ||
-						"Min. 8 characters with at least one capital letter, a number and a special character.",
+						"Min. 6 characters with at least one  number.",
 				],
 				value: "",
 				errors: [],
