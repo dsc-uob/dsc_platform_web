@@ -9,7 +9,7 @@
 				<template>
 					<v-tooltip bottom>
 						<!-- view in fullscreen -->
-						<template v-slot:activator="{ attrs, on }">
+						<!-- <template v-slot:activator="{ attrs, on }">
 							<v-btn
 								color="secondary"
 								dark
@@ -23,7 +23,7 @@
 							>
 								<v-icon>mdi-upload</v-icon>
 							</v-btn>
-						</template>
+						</template> -->
 
 						<span>Upload</span>
 					</v-tooltip>
@@ -54,17 +54,11 @@
 						<v-icon>mdi-view-dashboard-outline</v-icon>
 					</v-list-item-action>
 				</v-list-item>
-				<v-list-item class="mb-2" link to="/dashboard">
+				<v-list-item class="mb-2" link to="/">
 					<v-list-item-action>
 						<v-icon>mdi-home</v-icon>
 					</v-list-item-action>
 					<v-list-item-title>Dashboard home</v-list-item-title>
-				</v-list-item>
-				<v-list-item class="mb-2" link to="/dashboard/files">
-					<v-list-item-action>
-						<v-icon>mdi-file</v-icon>
-					</v-list-item-action>
-					<v-list-item-title>Files</v-list-item-title>
 				</v-list-item>
 			</v-list>
 		</v-navigation-drawer>
@@ -81,34 +75,11 @@ export default {
 			let urls = [
 				{
 					icon: "mdi-home",
-					text: "index.components.appbar.items.urls.home",
+					text: "Home",
 					to: "/",
 				},
-				{
-					icon: "mdi-currency-usd",
-					text: "index.components.appbar.items.urls.pricing",
-					to: "/pricing",
-				},
 			];
-			if (this.isLoggedIn)
-				urls.push({
-					icon: "mdi-logout",
-					text: "index.components.appbar.items.urls.logout",
-					to: "/logout",
-				});
-			if (this.role === "admin")
-				urls.push({
-					icon: "mdi-view-dashboard",
-					text: "index.components.appbar.items.urls.admin_panel",
-					to: "/admin-panel",
-				});
 			return urls;
-		},
-		isLoggedIn() {
-			return this.$store.getters.isLoggedIn;
-		},
-		role() {
-			return this.$store.getters.role;
 		},
 	},
 };
