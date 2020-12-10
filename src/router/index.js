@@ -14,22 +14,22 @@ const routes = [
 			requiresAuth: false,
 		},
 	},
+	// {
+	// 	path: '/',
+	// 	component: () => import("../views/Index/Index"),
+	// 	children: [
+	// 		{
+	// 			path: "",
+	// 			name: "Home",
+	// 			component: () => import('../views/Index/Home.vue')
+	// 		}
+	// 	],
+	// 	meta: {
+	// 		requiresAuth: true,
+	// 	},
+	// },
 	{
-		path: '/',
-		component: () => import("../views/Index/Index"),
-		children: [
-			{
-				path: "",
-				name: "Home",
-				component: () => import('../views/Index/Home.vue')
-			}
-		],
-		meta: {
-			requiresAuth: true,
-		},
-	},
-	{
-		path: "/dashboard",
+		path: "/",
 		name: "Dashboard",
 		component: () => import("../views/Dashboard/Index"),
 		children: [
