@@ -60,6 +60,13 @@ router.beforeEach((to, from, next) => {
 			return
 		}
 		next('/auth')
+	} else if (!to.matched.some((record) => record.meta.requiresAuth)) {
+		if (!isAuthenticated()) {
+			next()
+			return
+		}
+		next('/')
+
 	}
 	next()
 })
